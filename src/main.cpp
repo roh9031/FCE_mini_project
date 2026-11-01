@@ -4,7 +4,7 @@
 #include <vector>
 #include <sstream>
 #include <algorithm>
-
+#include <queue>
 class Airport{
     private:
     //write down all the varioables present in the .dat file
@@ -160,8 +160,77 @@ class AirportBST{
          if (root == nullptr) return 0;
          int sum = 0, count = 0;
          sumAndCount(root, 0, sum, count);
-         return sum / count;
-         }   
+         return (double)sum / count;
+         }  
+         
+         //helper for task 4a is valid bst STRAT
+         bool checkinorder(Node* root, Node * &prev) const{//left node right
+            if(!root) return true;
+            if(!checkinorder(root->left, prev)) return false;
+            if(prev && prev->data.getiata() >= root->data.getiata()) return false;
+            prev = root;
+            return checkinorder(root->right, prev);
+         }
+
+         bool validRange(Node* node, Node* low, Node* high) const {
+            if (node == nullptr) return true;
+
+            // low  = lower bound exclusive
+            // high = upper bound exclusive
+
+            if (low  != nullptr && node->data.getiata() <= low->data.getiata())  return false;
+            if (high != nullptr && node->data.getiata() >= high->data.getiata()) return false;
+
+            return validRange(node->left,  low, node)   // left subtree upper bound tightens to current
+             && validRange(node->right, node, high); // right subtree lower bound tightens to current
+        }
+
+        //helper for task 4a is valid bst END
+
+         void printinorderhelper(Node* root) const{
+            if(!root) return;
+            printinorderhelper(root->left);
+            std::cout << root->data.getiata() << " | " << root->data.getname() << " | "
+          << root->data.getcity() << ", " << root->data.getcountry() << "\n";
+            printinorderhelper(root->right);
+
+         }
+
+         void printpostorderhelper(Node* root) const{//left right node
+            if(!root) return;
+            printpostorderhelper(root->left);
+            printpostorderhelper(root->right);
+            std::cout<<root->data.getiata()<<" ";
+         }
+
+         void printpreorderhelper(Node* root) const{
+            if(!root) return;
+            std::cout<<root->data.getiata()<<" ";
+            printpreorderhelper(root->left);
+            printpreorderhelper(root->right);
+         }
+
+         std::vector<std::string> bfshelper(Node* root) const{
+            std::vector<std::string> res;
+            if(!root) return res;
+            std::queue<Node*> helper;
+            helper.push(root);
+            while(!helper.empty()){
+                Node* curr = helper.front();
+                helper.pop();
+                res.push_back(curr->data.getiata());
+                if(curr->left) helper.push(curr->left); 
+                if(curr->right) helper.push(curr->right);
+                /*empty/null will bepushed into vector but it will be marked as null if we do if(curr->left) etc 
+                we push only the present value pushing verything will help visualize bst struct better
+                */
+
+            }
+
+            return res;
+
+
+         }
     
 
         public:
@@ -188,6 +257,31 @@ class AirportBST{
         double avgdepth() const{
             return averagedepth(root);
         }
+
+        bool isvalidBST() const{
+            Node* prev = nullptr;
+            return checkinorder(root, prev);
+        }
+
+        bool isvalidBSTrangedsolution() const {
+            return validRange(root, nullptr, nullptr);
+        }
+
+        void printinorder() const{
+            return printinorderhelper(root);
+        }
+
+        void printpreorder() const{
+            return printpreorderhelper(root);
+        }
+
+        void printpostorder() const{
+            return printpostorderhelper(root);
+        }
+
+        std::vector<std::string> printbfs() const{
+            return bfshelper(root);
+        } 
 
         
 };
@@ -287,12 +381,28 @@ int main() {
     }
 
     std::cout << "Inserted " << insertedCount << " airports, "
-              << duplicateCount << " duplicates (expected 0)\n";
+              << duplicateCount << " duplicates (expected 0)\n \n";
 
     // task 1c height and average depth
+    std::cout<<"Task 1c \n";
     std::cout << "BST size: " << bst.size() << "\n";
     std::cout << "BST height: " << bst.height() << "\n";
-    std::cout << "Average depth: " << bst.avgdepth() << "\n";
+    std::cout << "Average depth: " << bst.avgdepth() << "\n \n";
+
+    // task 4a inorder list and sorted check
+    std::cout<<"Task 4a:\n";
+    std::cout << "Inorder: ";
+    //temporarily commented for clean terminal output bst.printinorder();
+    std::cout << "\nInorder is sorted: " << (bst.isvalidBST() ? "true" : "false") << "\n";
+
+    std::vector<std::string> lo = bst.printbfs();
+    std::cout << "Level order (first 7): ";
+    for (int i = 0; i < 7 && i < (int)lo.size(); i++) {
+         std::cout << lo[i] << " ";
+    }  
+    std::cout << "\nLevel order count: " << lo.size() << " (expected 6072)\n";
+    std::cout<<"\nTask 4c\n";
+    std::cout << "Task 4c validate (range method): " << (bst.isvalidBSTrangedsolution() ? "true" : "false") << "\n";
 
     return 0;
 }
