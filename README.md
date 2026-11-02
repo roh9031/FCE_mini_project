@@ -1,6 +1,6 @@
 # Airport Code Lookup Service with a Binary Search Tree
 
-**EECE 2560: Fundamentals of Engineering Algorithms · Northeastern University · Fall 2026 · Mini Project**
+**EECE 7250: Fundamentals of Computer Engineering · Northeastern University · Fall 2026 · Mini Project**
 
 Team: Rohini Bidnurmath and Catalina Buitano
 
