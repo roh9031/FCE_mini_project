@@ -6282,11 +6282,37 @@ BWH | Butterworth Airport | Butterworth, Malaysia
 BWI | Baltimore/Washington International Thurgood Marshall Airport | Baltimore, United States
 range BOS BWI: 113 airports (expected 113), 127 nodes visited
 
+Recursive vs iterative
+insert: height 177 vs 177, same level order: true
+find BOS, iterative:
+Path: GKA -> AEY -> EGS -> BUJ -> BJA -> BSK -> BOY -> BNI -> BOH -> BOO -> BOU -> BOS    (comparisons: 12)
+BOS General Edward Lawrence Logan International Airport, Boston, United States
+find BOS, recursive:
+Path: GKA -> AEY -> EGS -> BUJ -> BJA -> BSK -> BOY -> BNI -> BOH -> BOO -> BOU -> BOS    (comparisons: 12)
+BOS General Edward Lawrence Logan International Airport, Boston, United States
+find XYZ, iterative:
+Path: GKA -> MAG -> POM -> WWK -> YAM -> XFW -> XGN -> XLS -> XRY -> XVS -> YAI -> YAA -> XYA -> XYE -> (NULL)    not found   (comparisons: 14)
+find XYZ, recursive:
+Path: GKA -> MAG -> POM -> WWK -> YAM -> XFW -> XGN -> XLS -> XRY -> XVS -> YAI -> YAA -> XYA -> XYE -> (NULL)    not found   (comparisons: 14)
+min/max iterative: AAA ZZV   recursive: AAA ZZV
+iterative: Deleted AAC (case D1: leaf)   validate: OK
+recursive: Deleted AAC (case D1: leaf)   validate: OK
+iterative: Deleted GJT (case D2: only a left child, GJR)   validate: OK
+recursive: Deleted GJT (case D2: only a left child, GJR)   validate: OK
+iterative: Deleted AAA (case D1: leaf)   validate: OK
+recursive: Deleted AAA (case D1: leaf)   validate: OK
+iterative: Deleted AEY (case D3: two children, replaced by successor AFA)   validate: OK
+recursive: Deleted AEY (case D3: two children, replaced by successor AFA)   validate: OK
+iterative: Deleted GKA (case D3: two children, replaced by successor GKE (this was the root))   validate: OK
+recursive: Deleted GKA (case D3: two children, replaced by successor GKE (this was the root))   validate: OK
+after the same 5 deletes: same level order: true
+
+
 Task 6
-File order:     height 177  avg depth 18.3233  10000 searches: 2.9809 ms
-Sorted order:   height 6071  avg depth 3035.5  10000 searches: 362.729 ms
-Balanced:       height 12  avg depth 10.6532  10000 searches: 2.05 ms
-Random shuffle: height 31  avg depth 14.8844  10000 searches: 2.6855 ms
+File order:     height 177  avg depth 18.3233  10000 searches: 3.1832 ms
+Sorted order:   height 6071  avg depth 3035.5  10000 searches: 345.327 ms
+Balanced:       height 12  avg depth 10.6532  10000 searches: 2.2111 ms
+Random shuffle: height 31  avg depth 14.8844  10000 searches: 2.5229 ms
 expected heights: 177, 6071, 12, about 25-29
 After rebalance: height 12  avg depth 10.6532
 

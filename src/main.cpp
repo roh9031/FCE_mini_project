@@ -295,9 +295,71 @@ class AirportBST{
             return node;
          }
 
+        // recursive versions of search min max and delete
+
+         // recursive search compare with this node then search only the side the code can be on
+         Node* searchrecursivehelper(Node* node, const std::string& code, std::vector<std::string>& path, int& comparisons) const{
+            if(!node) return nullptr;
+            path.push_back(node->data.getiata());
+            comparisons++;
+            if(code == node->data.getiata()) return node;
+            if(code < node->data.getiata()) return searchrecursivehelper(node->left, code, path, comparisons);
+            return searchrecursivehelper(node->right, code, path, comparisons);
+         }
+
+         // recursive min / max the leftmost / rightmost node
+         Node* minnoderecursive(Node* node) const{
+            if(!node->left) return node;
+            return minnoderecursive(node->left);
+         }
+
+         Node* maxnoderecursive(Node* node) const{
+            if(!node->right) return node;
+            return maxnoderecursive(node->right);
+         }
+
+         /* recursive delete returns the new root of this subtree and the parent stores it
+         d1 leaf return null, d2 one child: return that child,
+         d3 two children copy the successor (min of right subtree) here, then delete it from the right subtree */
+         Node* removerecursivehelper(Node* node, const std::string& code, std::string& deletecase){
+            if(!node){
+                deletecase = "not found";
+                return nullptr;
+            }
+            if(code < node->data.getiata()){
+                node->left = removerecursivehelper(node->left, code, deletecase);
+                return node;
+            }
+            if(code > node->data.getiata()){
+                node->right = removerecursivehelper(node->right, code, deletecase);
+                return node;
+            }
+            if(!node->left && !node->right){
+                deletecase = "case D1: leaf";
+                delete node;
+                return nullptr;
+            }
+            if(!node->right){
+                Node* child = node->left;
+                deletecase = "case D2: only a left child, " + child->data.getiata();
+                delete node;
+                return child;
+            }
+            if(!node->left){
+                Node* child = node->right;
+                deletecase = "case D2: only a right child, " + child->data.getiata();
+                delete node;
+                return child;
+            }
+            Node* succ = minnoderecursive(node->right);
+            deletecase = "case D3: two children, replaced by successor " + succ->data.getiata();
+            node->data = succ->data;
+            std::string succcase;   // the successor has no left child so this is d1 or d2
+            node->right = removerecursivehelper(node->right, node->data.getiata(), succcase);
+            return node;
+         }
 
     
-
         public:
         AirportBST() : root(nullptr) {}
         ~AirportBST(){
@@ -519,6 +581,60 @@ class AirportBST{
             std::vector<Airport> sorted;
             inordervectorhelper(root, sorted);
             buildbalanced(sorted);
+        }
+
+                // public recursive versions insert find min max remove
+
+        // recursive insert: uses insertBSTrecursive
+        bool insertrecursive(const Airport& airport){
+            bool inserted = false;
+            root = insertBSTrecursive(root, airport, inserted);
+            return inserted;
+        }
+
+        // recursive find prints the same path and comparisons as find
+        bool findrecursive(const std::string& code) const{
+            std::vector<std::string> path;
+            int comparisons = 0;
+            Node* found = searchrecursivehelper(root, code, path, comparisons);
+            std::cout << "Path: ";
+            for(int i = 0; i < (int)path.size(); i++){
+                std::cout << path[i];
+                if(i < (int)path.size() - 1) std::cout << " -> ";
+            }
+            if(found){
+                std::cout << "    (comparisons: " << comparisons << ")\n";
+                std::cout << found->data.getiata() << " " << found->data.getname() << ", "
+                          << found->data.getcity() << ", " << found->data.getcountry() << "\n";
+                return true;
+            }
+            std::cout << " -> (NULL)    not found   (comparisons: " << comparisons << ")\n";
+            return false;
+        }
+
+        std::string findminrecursive() const{
+            if(!root) return "(empty)";
+            return minnoderecursive(root)->data.getiata();
+        }
+
+        std::string findmaxrecursive() const{
+            if(!root) return "(empty)";
+            return maxnoderecursive(root)->data.getiata();
+        }
+
+        // recursive remove prints the case and validates like remove
+        bool removerecursive(const std::string& code){
+            bool wasroot = (root && root->data.getiata() == code);
+            std::string deletecase;
+            root = removerecursivehelper(root, code, deletecase);
+            if(deletecase == "not found"){
+                std::cout << code << " not found, nothing deleted\n";
+                return false;
+            }
+            if(wasroot) deletecase += " (this was the root)";
+            std::cout << "Deleted " << code << " (" << deletecase << ")   validate: "
+                      << (isvalidBSTrangedsolution() ? "OK" : "FAILED") << "\n";
+            return true;
         }
 
 
@@ -786,10 +902,33 @@ int main() {
     std::cout<<"\nTask 5\n";
     int visited = 0;
     std::vector<std::string> inrange = bst.range("BOS", "BWI", visited);
-    for (int i = 0; i < (int)inrange.size(); i++) {           // ADDED: list every airport in the range
+    for (int i = 0; i < (int)inrange.size(); i++) {           //  list every airport in the range
         printairportbycode(sortedairports, inrange[i]);
     }
     std::cout << "range BOS BWI: " << inrange.size() << " airports (expected 113), " << visited << " nodes visited\n";
+
+    // recursive vs iterative both versions must build the same tree and give the same answers
+    std::cout << "\nRecursive vs iterative\n";
+    AirportBST itertree, rectree;
+    for (int i = 0; i < n; i++) {
+        itertree.insert(airports[i]);            // iterative insert insertBSTiterative
+        rectree.insertrecursive(airports[i]);    // recursive insert insertBSTrecursive
+    }
+    std::cout << "insert: height " << itertree.height() << " vs " << rectree.height()
+              << ", same level order: " << (itertree.printbfs() == rectree.printbfs() ? "true" : "false") << "\n";
+    std::cout << "find BOS, iterative:\n";  itertree.find("BOS");
+    std::cout << "find BOS, recursive:\n";  rectree.findrecursive("BOS");
+    std::cout << "find XYZ, iterative:\n";  itertree.find("XYZ");
+    std::cout << "find XYZ, recursive:\n";  rectree.findrecursive("XYZ");
+    std::cout << "min/max iterative: " << itertree.findmin() << " " << itertree.findmax()
+              << "   recursive: " << rectree.findminrecursive() << " " << rectree.findmaxrecursive() << "\n";
+    std::string bothdeletes[5] = {"AAC", "GJT", "AAA", "AEY", "GKA"};
+    for (int i = 0; i < 5; i++) {
+        std::cout << "iterative: ";  itertree.remove(bothdeletes[i]);
+        std::cout << "recursive: ";  rectree.removerecursive(bothdeletes[i]);
+    }
+    std::cout << "after the same 5 deletes: same level order: "
+              << (itertree.printbfs() == rectree.printbfs() ? "true" : "false") << "\n\n";
 
 
     // task 6 shape experiment same 10000 random codes for every tree

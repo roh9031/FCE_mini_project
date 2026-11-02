@@ -21,6 +21,8 @@ airport-bst-cpp/
 │   └── airports.dat             OpenFlights airport data (course copy)
 ├── docs/
 │   ├── pseudocode.md            pseudocode for every operation
+|   ├── Mini_project_report
+|   |   _Bidnurmath_Buitano.pdf  report for mini project    
 │   ├── session_commands.txt     commands used for the sample run
 │   ├── sample_output.txt        full output of a test run
 │   └── demo.gif                 screen recording of a session
