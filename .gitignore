@@ -1,0 +1,14 @@
+# compiled program (anyone can rebuild it with g++)
+airports
+airports.exe
+main
+main.exe
+*.o
+
+# created every time the program runs (task 4b save/load)
+preorder.txt
+
+# editor and system files
+.vscode/
+.DS_Store
+Thumbs.db

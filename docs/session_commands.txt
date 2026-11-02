@@ -1,0 +1,5 @@
+find BOS
+range BOS BWI
+remove AEY
+validate
+quit
