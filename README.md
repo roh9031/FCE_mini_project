@@ -17,6 +17,7 @@ airport-bst-cpp/
 ├── src/
 │   └── main.cpp                 Airport and AirportBST classes, loader, tests, interactive session
 ├── data/
+|   ├── airports.csv
 │   └── airports.dat             OpenFlights airport data (course copy)
 ├── docs/
 │   ├── pseudocode.md            pseudocode for every operation

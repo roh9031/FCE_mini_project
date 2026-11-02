@@ -8,7 +8,7 @@
 #include <chrono>    // task 6 timing
 #include <random>    // task 6 random searches and shuffle
 #include <iomanip>   // task 6 table columns
-#include <cctype>    // ADDED: toupper for the session commands
+#include <cctype>    // toupper for the session commands
 
 
 class Airport{
@@ -238,7 +238,6 @@ class AirportBST{
 
          }
 
-         // added from cata's code private helpers 
 
          //helper for task 2 search START
          //loop down from the root and save every code we compare with
@@ -296,7 +295,7 @@ class AirportBST{
             return node;
          }
 
-         // end of cata's private helpers 
+
     
 
         public:
@@ -349,7 +348,7 @@ class AirportBST{
             return bfshelper(root);
         } 
 
-        // added from cata's code public functions 
+
 
         //delete every node so we can build again
         void clear(){
@@ -522,7 +521,7 @@ class AirportBST{
             buildbalanced(sorted);
         }
 
-        // end of cata's public functions
+
 
         
 };
@@ -598,7 +597,7 @@ bool loadairports(const std::string& filename, std::vector<Airport>& airports) {
     return true;                             // tell main it worked
 }
 
-// added from cata's code free functions
+
 
 bool compareiata(const Airport& a, const Airport& b){
     return a.getiata() < b.getiata();
@@ -635,7 +634,7 @@ double timesearches(const AirportBST& tree, const std::vector<std::string>& quer
     return std::chrono::duration<double, std::milli>(end - start).count();
 }
 
-// end of cata's free functions
+
 
 // task 5 prints every airport in the rangeso we need the full record for each code
 // binary search in the airports sorted by code prints one airport per line
@@ -708,17 +707,17 @@ int main() {
     std::cout << "BST height: " << bst.height() << "\n";
     std::cout << "Average depth: " << bst.avgdepth() << "\n \n";
 
-    // added from cata's main tasks 2 and 3 
+
 
     // task 2 search every case
     std::cout << "Task 2\n";
     bst.find(bst.rootiata());   // the root (GKA)
     bst.find("AAC");            // a leaf
     bst.find("YZR");            // deep in the tree
-    bst.find(bst.deepestiata()); // ADDED: the deepest node of all
+    bst.find(bst.deepestiata()); // the deepest node of all
     bst.find("XYZ");            // does not exist
     bst.find("AAA");            // smallest code
-    bst.find("000");            // ADDED: smaller than every code (digits sort before letters)
+    bst.find("000");            // smaller than every code (digits sort before letters)
     bst.find("ZZZZ");           // bigger than every code
     bst.find("BOS");
     std::cout << "Min code: " << bst.findmin() << "   Max code: " << bst.findmax() << "\n \n";
@@ -753,7 +752,7 @@ int main() {
 
     // task 4a inorder list and sorted check
     std::cout<<"Task 4a:\n";
-    std::cout << "list (every airport in code order):\n";   // CHANGED: label on its own line
+    std::cout << "list (every airport in code order):\n";   // label on its own line
     bst.printinorder();
     std::cout << "\nInorder is sorted: " << (bst.isvalidBST() ? "true" : "false") << "\n";
 
@@ -764,7 +763,7 @@ int main() {
     }  
     std::cout << "\nLevel order count: " << lo.size() << " (expected 6072)\n";
 
-    // added from cata's main task 4b 
+ 
 
     // task 4b save in preorder load it back check the shape is the same
     std::cout<<"\nTask 4b\n";
@@ -782,7 +781,6 @@ int main() {
     std::cout << "validate after every insert (task 1b build): " << (alwaysvalid ? "true" : "false") << "\n";   // ADDED
     std::cout << "Task 4c validate (range method): " << (bst.isvalidBSTrangedsolution() ? "true" : "false") << "\n";
 
-    // added from cata's main tasks 5 
 
     // task 5 range query
     std::cout<<"\nTask 5\n";
@@ -792,7 +790,7 @@ int main() {
         printairportbycode(sortedairports, inrange[i]);
     }
     std::cout << "range BOS BWI: " << inrange.size() << " airports (expected 113), " << visited << " nodes visited\n";
-    // end cata's code
+
 
     // task 6 shape experiment same 10000 random codes for every tree
     std::cout<<"\nTask 6\n";
@@ -840,7 +838,7 @@ int main() {
 
     // end of tasks 5 and 6
 
-    // interactive session - the commands named in the handout
+    // interactive session the commands named in the handout
     // find remove list save load validate range rebalance used for the README sample and the GIF
     buildtree(bst, airports);   // start the session from the file order tree
     std::cout << "\n Interactive session (type help for commands) \n";
